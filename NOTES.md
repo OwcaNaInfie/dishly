@@ -30,3 +30,14 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+Na stronie głównej zrobić powitanie Witaj mail@gmail.com! za pomocą requestu http get.

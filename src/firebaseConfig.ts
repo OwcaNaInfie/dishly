@@ -1,14 +1,23 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
+// Twoje dane konfiguracyjne Firebase
 const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-  appId: 'YOUR_APP_ID',
+	apiKey: "AIzaSyAjmzmee4iCozJ_OrU2Od4-5UsJ2ATYPEg",
+	authDomain: "dishly0.firebaseapp.com",
+	projectId: "dishly0",
+	storageBucket: "dishly0.firebasestorage.app",
+	messagingSenderId: "196014819992",
+	appId: "1:196014819992:web:df660b06e30e07d40ddeed",
+	measurementId: "G-FN7B7YT0S8"
 };
 
+// Inicjalizacja aplikacji Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+// Inicjalizacja usług Firebase
+const auth = getAuth(app);
+const googleAuthProvider = new GoogleAuthProvider()
+const db = getFirestore(app);
+
+export {app, auth, googleAuthProvider, db}

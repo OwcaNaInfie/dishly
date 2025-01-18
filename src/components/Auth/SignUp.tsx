@@ -1,32 +1,37 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import { FirebaseError } from 'firebase/app';
+import { useNavigate } from 'react-router-dom'
 
-const Login: React.FC = () => {
+const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const navigateTo = useNavigate()
+
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert('Logowanie zakończone sukcesem!');
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert('Rejestracja zakończona sukcesem!');
+      navigateTo("/")
+
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(err.message);
-      } else {
-        setError('Wystąpił nieoczekiwany błąd.');
-      }
+							setError(err.message);
+						} else {
+							setError('Wystąpił nieoczekiwany błąd.');
+						}
     }
   };
 
   return (
     <div>
-      <h2>Logowanie</h2>
-      <form onSubmit={handleLogin}>
+      <h2>Rejestracja</h2>
+      <form onSubmit={handleSignUpSubmit}>
         <input
           type="email"
           placeholder="Email"
@@ -39,11 +44,11 @@ const Login: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit">Zaloguj się</button>
+        <button type="submit">Zarejestruj się</button>
       </form>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
