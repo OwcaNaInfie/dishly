@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from '../../assets/react.svg'
-import viteLogo from '../../../public/vite.svg'
 import Button from '../Button/Button'
 import { signOut } from 'firebase/auth'
 import { auth } from '../../firebaseConfig'
@@ -19,14 +17,6 @@ function Dashboard() {
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
       <Button className='btn-primary' text='Wyloguj' onClick={handleSignOutClick}/>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>

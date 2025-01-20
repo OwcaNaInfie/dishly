@@ -1,6 +1,11 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./node_modules/flyonui/dist/js/*.js"],
   theme: {
+    fontFamily: {
+      'poppins': ['"poppins"', 'ui-sans-serif'],
+      'fascinate': ['"fascinate"', 'ui-sans-serif'],
+      'slab': ['"slab"', 'ui-sans-serif'],
+    },
     extend: {},
   },
   plugins: [
@@ -11,12 +16,12 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          "primary": "#9f00ff",
-          "primary-content": "#ebd9ff",
+          "accent": "#9f00ff",
+          "accent-content": "#ebd9ff",
           "secondary": "#00efe7",
           "secondary-content": "#001413",
-          "accent": "#3f2fff",
-          "accent-content": "#d1dcff",
+          "primary": "#3f2fff",
+          "primary-content": "#d1dcff",
           "neutral": "#181818",
           "neutral-content": "#cbcbcb",
           "base-100": "#fffedf",

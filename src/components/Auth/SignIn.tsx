@@ -4,6 +4,7 @@ import { auth, googleAuthProvider } from '../../firebaseConfig';
 import Button from '../Button/Button';
 import { FirebaseError } from 'firebase/app';
 import { useNavigate } from 'react-router-dom';
+import AuthLayout from '../Layouts/AuthLayout';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -21,10 +22,33 @@ const SignIn: React.FC = () => {
       alert('Logowanie zakończone sukcesem!');
       navigateTo('/');
     } catch (err) {
+      // Sprawdź, czy err jest instancją FirebaseError
       if (err instanceof FirebaseError) {
-        setError(err.message);
+        switch (err.code) {
+          case "auth/invalid-email":
+            setError("Wpisałeś niepoprawny email.");
+            break;
+          case "auth/wrong-password":
+            setError("Wpisałeś niepoprawne hasło.");
+            break;
+          case "auth/invalid-credential":
+            setError("Wpisałeś niepoprawne hasło.");
+            break;
+          case "auth/missing-password":
+            setError("Wpisz hasło.");
+            break;
+          default:
+            setError("Wystąpił nieoczekiwany błąd.");
+            console.log(err.message);
+        }
+      } else if (err instanceof Error) {
+        // Obsługa błędów ogólnych
+        setError(`Wystąpił błąd: ${err.message}`);
+        console.log(err.message);
       } else {
-        setError('Wystąpił nieoczekiwany błąd.');
+        // Obsługa przypadku, gdy nie wiadomo, co jest w err
+        setError("Wystąpił nieznany błąd.");
+        console.error(err);
       }
     }
   };
@@ -50,32 +74,58 @@ const SignIn: React.FC = () => {
   
 
   return (
-    <div>
-      <h2>Logowanie</h2>
-      <form onSubmit={handleSignInSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Hasło"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Zaloguj się</button>
+    <AuthLayout>
+      <form
+        onSubmit={handleSignInSubmit}
+        className='flex flex-col justify-between gap-y-6'
+        >
+        <div className="relative w-96 mx-auto">
+          <input
+            type="email"
+            placeholder="Email"
+            className="input input-floating input-lg peer"
+            id="floatingInput"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <label
+            className="input-floating-label"
+            htmlFor="floatingInput">Email</label>
+        </div>
+        <div className="relative w-96 mx-auto">
+          <input
+            type="password"
+            placeholder="Hasło"
+            className="input input-floating input-lg peer"
+            id="floatingInput"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <label
+            className="input-floating-label"
+            htmlFor="floatingInput">Hasło</label>
+        </div>
+        <Button
+          className='flex w-96 mx-auto'
+          type="submit"
+          >Zaloguj się</Button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div className="mx-auto h-[37px]">
+          {error && <p className="text-error mx-auto">{error}</p>}
+      </div>
       <div>
-        <p>lub</p>
-        <Button onClick={handleGoogleSignIn}>
-          <span className="icon-[tabler--brand-google]"></span> Zaloguj się z Google
+        <p className='text-center mt-0'>lub zaloguj się przy użyciu:</p>
+        <Button
+          className='flex w-96 btn-soft mx-auto'
+          onClick={handleGoogleSignIn}
+        >
+          <span className="icon-[tabler--brand-google]"></span>
         </Button>
       </div>
-      <p>Nie masz konta? <a href="/signup">Zarejestruj się</a></p>
-    </div>
+      <p className='text-center'>
+        Nie masz konta? <a className="link link-primary link-animated" href="/signup">Zarejestruj się</a>
+      </p>
+    </AuthLayout>
   );
 };
 
