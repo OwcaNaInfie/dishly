@@ -30,9 +30,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className='h-dvh flex flex-col justify-between'>
+    <div className='lg:h-dvh flex flex-col justify-between'>
       <div className='p-8 w-full flex-1 flex justify-center'>
-          <div className='flex flex-col md:flex-row h-5/6 max-w-7xl mx-auto my-auto'>
+          <div className='flex flex-col lg:flex-row h-5/6 max-w-7xl mx-auto my-auto'>
             <Carousel slides={slides} />
             <div className="flex flex-col p-8">
               <Heading className="text-center" type="h1" title="Najlepsze przepisy w zasięgu Twojej ręki!" />

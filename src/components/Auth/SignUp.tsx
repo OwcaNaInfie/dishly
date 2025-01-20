@@ -28,6 +28,9 @@ const SignUp: React.FC = () => {
           case "auth/weak-password":
             setError("Hasło powinno mieć przynajmniej 6 znaków.");
             break;
+            case "auth/invalid-email":
+            setError("Email nie jest poprawny.");
+            break;
           case "auth/email-already-in-use":
             setError("Ten email ma już konto na dishly.");
             break;

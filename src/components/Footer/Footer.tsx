@@ -4,7 +4,7 @@ const Footer: React.FC<React.HTMLAttributes<HTMLElement>> = ({
   ...props
 }) => {
   // Połącz przekazane klasy z domyślnymi klasami
-  const footerClasses = `footer bg-base-200/60 items-center rounded-t-box px-6 py-4 shadow ${className || ''}`;
+  const footerClasses = `footer bg-base-100 border-t border-neutral items-center px-6 py-4 ${className || ''}`;
 
   return (
     <footer className={footerClasses} {...props}>
