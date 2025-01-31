@@ -93,7 +93,7 @@ const SignUp: React.FC = () => {
           >Zarejestruj się</Button>
       </form>
       <div className="mx-auto h-[37px]">
-          {error && <p className="text-error mx-auto">{error}</p>}
+          {error && <p className="text-error text-center mx-auto">{error}</p>}
       </div>
       <p className='text-center'>
         Masz już konro? <a className="link link-primary link-animated" href="/signin">Zaloguj się</a>

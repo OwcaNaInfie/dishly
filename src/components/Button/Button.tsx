@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onClick?: () => void; // Funkcja do wykonania po kliknięciu
+  onClick?: (() => void) | ((event: React.MouseEvent<HTMLButtonElement>) => void);
   overrideStyles?: boolean; // Czy nadpisywać domyślne style
 }
 

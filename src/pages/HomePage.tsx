@@ -1,12 +1,11 @@
 import MainLayout from "../components/Layouts/MainLayout"
-import Dashboard from "../components/Dashboard/Dashboard"
+import RecipeList from "../components/RecipeList/RecipeList"
 
 function HomePage() {
 
   return (
     <MainLayout>
-      <h1>HomePage COMPONENT</h1>
-      <Dashboard/>
+      <RecipeList />
     </MainLayout>
   )
 }

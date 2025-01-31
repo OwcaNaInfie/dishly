@@ -111,7 +111,7 @@ const SignIn: React.FC = () => {
           >Zaloguj się</Button>
       </form>
       <div className="mx-auto h-[37px]">
-          {error && <p className="text-error mx-auto">{error}</p>}
+          {error && <p className="text-error text-center mx-auto">{error}</p>}
       </div>
       <div>
         <p className='text-center mt-0'>lub zaloguj się przy użyciu:</p>

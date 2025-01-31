@@ -8,9 +8,9 @@ import './output.css'
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <RoutesConfig />
-      </Router>
+        <Router>
+          <RoutesConfig />
+        </Router>
     </AuthProvider>
   );
 }
