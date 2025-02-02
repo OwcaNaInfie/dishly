@@ -15,7 +15,6 @@ const RecipeList: React.FC = () => {
     dispatch(fetchRecipes());
   }, [dispatch]);
 
-
   return (
     <div className="home-container">
       <Heading type='h1' title='Przepisy' />
