@@ -3,9 +3,13 @@ import { signOut } from 'firebase/auth'
 import { auth } from '../../firebaseConfig'
 import { useNavigate } from 'react-router-dom'
 
-
 const Navigation: React.FC = () => {
   const navigateTo = useNavigate()
+  const user = auth.currentUser;
+
+  if (!user) {
+    return <p>Nie jesteś zalogowany.</p>;
+  }
 
   const handleSignOutClick = () => {
     signOut(auth).then(val => {
@@ -23,18 +27,17 @@ const Navigation: React.FC = () => {
         <li className="dropdown-header gap-2">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src="https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png" alt="User Avatar" />
+              <img src={ user.photoURL || "https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png" } alt="User Avatar" />
             </div>
           </div>
           <div>
-            <h6 className="text-base-content text-base font-semibold">John Doe</h6>
-            <small className="text-base-content/50 text-sm font-normal">jhon@doe.com</small>
+            <h6 className="text-base-content text-base font-semibold">{ user.displayName || "Jane Doer"}</h6>
+            <small className="text-base-content/50 text-sm font-normal">{ user.email }</small>
           </div>
         </li>
-        <li><a className="dropdown-item" href="#">Profil</a></li>
-        <li><a className="dropdown-item" href="#">Settings</a></li>
-        <li><a className="dropdown-item" href="#">Billing</a></li>
-        <li><a className="dropdown-item" href="#">FAQs</a></li>
+        <li><a className="dropdown-item" href="/profile">Profil</a></li>
+        <li><a className="dropdown-item" href="/">Przepisy</a></li>
+
         <li className="dropdown-footer gap-2">
           <Button onClick={handleSignOutClick} className="btn btn-error btn-soft btn-block">Wyloguj</Button>
         </li>

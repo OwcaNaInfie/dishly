@@ -1,34 +1,46 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
-import { FirebaseError } from 'firebase/app';
-import { useNavigate } from 'react-router-dom'
+import { useAppDispatch } from '../../store';
+import { registerUser } from '../../features/auth/authThunks';
+import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../Layouts/AuthLayout';
 import Button from '../Button/Button';
+import { FirebaseError } from 'firebase/app';
+import { UserGender } from '../../models/User';
+import { auth } from '../../firebaseConfig';
 
 const SignUp: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const navigateTo = useNavigate()
-
+  const dispatch = useAppDispatch();
+  const navigateTo = useNavigate();
+  
   const handleSignUpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert('Rejestracja zakończona sukcesem!');
-      navigateTo("/")
 
+    const newUser = {
+      email,
+      password,
+      name: 'John',
+      surname: 'Doe',
+      photoURL: auth.currentUser?.photoURL || "https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png",
+      gender: UserGender.MALE,
+      bio: 'Opis użytkownika',
+      telephone: '000-000-000',
+    };
+
+    try {
+      await dispatch(registerUser(newUser)).unwrap();
+      alert('Rejestracja zakończona sukcesem!');
+      navigateTo('/');
     } catch (err) {
-      // Sprawdź, czy err jest instancją FirebaseError
       if (err instanceof FirebaseError) {
         switch (err.code) {
           case "auth/weak-password":
             setError("Hasło powinno mieć przynajmniej 6 znaków.");
             break;
-            case "auth/invalid-email":
+          case "auth/invalid-email":
             setError("Email nie jest poprawny.");
             break;
           case "auth/email-already-in-use":
@@ -45,11 +57,9 @@ const SignUp: React.FC = () => {
             console.log(err.message);
         }
       } else if (err instanceof Error) {
-        // Obsługa błędów ogólnych
         setError(`Wystąpił błąd: ${err.message}`);
         console.log(err.message);
       } else {
-        // Obsługa przypadku, gdy nie wiadomo, co jest w err
         setError("Wystąpił nieznany błąd.");
         console.error(err);
       }
@@ -58,9 +68,7 @@ const SignUp: React.FC = () => {
 
   return (
     <AuthLayout>
-      <form onSubmit={handleSignUpSubmit}
-      className='flex flex-col justify-between gap-y-6'
-      >
+      <form onSubmit={handleSignUpSubmit} className='flex flex-col justify-between gap-y-6'>
         <div className="relative w-96 mx-auto">
           <input
             type="email"
@@ -70,37 +78,27 @@ const SignUp: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label
-            className="input-floating-label"
-            htmlFor="floatingInput">Email</label>
+          <label className="input-floating-label" htmlFor="floatingInput">Email</label>
         </div>
         <div className="relative w-96 mx-auto">
           <input
             type="password"
             placeholder="Hasło"
             className="input input-floating input-lg peer"
-            id="floatingInput"
+            id="floatingPassword"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label
-            className="input-floating-label"
-            htmlFor="floatingInput">Hasło</label>
+          <label className="input-floating-label" htmlFor="floatingPassword">Hasło</label>
         </div>
-        <Button
-          className='flex w-96 mx-auto'
-          type="submit"
-          >Zarejestruj się</Button>
+        <Button className='flex w-96 mx-auto' type="submit">Zarejestruj się</Button>
       </form>
-      <div className="mx-auto h-[37px]">
-          {error && <p className="text-error text-center mx-auto">{error}</p>}
-      </div>
+      {error && <p className="text-error text-center mx-auto mt-2">{error}</p>}
       <p className='text-center'>
-        Masz już konro? <a className="link link-primary link-animated" href="/signin">Zaloguj się</a>
+        Masz już konto? <a className="link link-primary link-animated" href="/signin">Zaloguj się</a>
       </p>
     </AuthLayout>
   );
-  
 };
 
 export default SignUp;

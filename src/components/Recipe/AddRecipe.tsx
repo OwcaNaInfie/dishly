@@ -1,61 +1,183 @@
-// import React, { useState } from 'react';
-// import { useRecipes } from '../../context/RecipeContext';
-// import Button from '../Button/Button';
-
-// const AddRecipe: React.FC = () => {
-// 	const { addRecipe } = useRecipes();
-// 	const [title, setTitle] = useState('');
-
-// 	const handleAddRecipe = (e: React.FormEvent<HTMLFormElement>) => {
-// 		e.preventDefault();
-// 		addRecipe(title);
-// 		setTitle('');
-// 	};
-
-// 	return (
-// 		<form onSubmit={handleAddRecipe} className="add-recipe-form flex mb-8">
-// 			<div className="w-96 mr-8">
-// 				<label className="label label-text sr-only" htmlFor="hiddenLabel"> Full name </label>
-// 				<input type="text" value={title}
-// 					onChange={(e) => setTitle(e.target.value)} id="hiddenLabel" className="input input-lg" placeholder="Tytuł przepisu" />
-// 			</div>
-// 			<Button type="submit">Dodaj przepis</Button>
-// 		</form>
-// 	);
-// };
-
-// export default AddRecipe;
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppDispatch } from '../../store';
+import { auth } from '../../firebaseConfig';
 import { addRecipe } from '../../features/recipeSlice';
 import Button from '../Button/Button';
+import { RecipeCategory } from '../../models/Recipe';
 
 const AddRecipe: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [title, setTitle] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [preparationTime, setPreparationTime] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [category, setCategory] = useState<RecipeCategory>(RecipeCategory.BREAKFAST);
+  const [isRestricted, setIsRestricted] = useState(false);
 
-  const handleAddRecipe = (e: React.FormEvent<HTMLFormElement>) => {
+  // Stan lokalny do zarządzania widocznością formularza
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    // Inicjalizacja FlyonUI Dropdown
+    window.HSStaticMethods.autoInit(["dropdown"]);
+  }, []);
+
+  const handleAddRecipe = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(addRecipe(title));
-    setTitle('');
+
+    // Pobierz uid aktualnego użytkownika
+    const user = auth.currentUser;
+    if (!user) {
+      alert('Musisz być zalogowany, aby dodać przepis.');
+      return;
+    }
+
+    const newRecipe = {
+      authorId: user.uid, // Użyj uid użytkownika
+      name,
+      description,
+      preparationTime,
+      instructions,
+      category,
+      isRestricted,
+    };
+
+    dispatch(addRecipe(newRecipe));
+
+    // Wyczyść formularz
+    setName('');
+    setDescription('');
+    setPreparationTime('');
+    setInstructions('');
+    setCategory(RecipeCategory.BREAKFAST);
+    setIsRestricted(false);
+
+    // Zamknij formularz po pomyślnym dodaniu przepisu
+    setShowForm(false);
+  };
+
+  const handleCategorySelect = (selectedCategory: RecipeCategory) => {
+    setCategory(selectedCategory);
   };
 
   return (
-    <form onSubmit={handleAddRecipe} className="add-recipe-form flex mb-8">
-      <div className="w-96 mr-8">
-        <label className="label label-text sr-only" htmlFor="hiddenLabel"> Full name </label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          id="hiddenLabel"
-          className="input input-lg"
-          placeholder="Tytuł przepisu"
-        />
-      </div>
-      <Button type="submit">Dodaj przepis</Button>
-    </form>
+    <div>
+      {/* Przycisk do otwierania formularza */}
+      <Button className="mb-4" onClick={() => setShowForm(!showForm)}>
+        {showForm ? 'Ukryj formularz' : 'Dodaj nowy przepis'}
+      </Button>
+
+      {/* Formularz */}
+      {showForm && (
+        <form onSubmit={handleAddRecipe} className='card-body flex flex-col justify-between gap-y-6 border border-neutral mb-4'>
+          <div className="relative w-96 mx-auto">
+            <label className="label label-text" htmlFor="name">
+              Nazwa przepisu
+            </label>
+            <input
+              required
+              maxLength={45}
+              type="text"
+              className="input"
+              id="name"
+              placeholder="Nazwij swój przepis."
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+
+          <div className="relative w-96 mx-auto">
+            <label className="label label-text" htmlFor="description">
+              Opis
+            </label>
+            <textarea
+              required
+              maxLength={130}
+              className="textarea"
+              placeholder="Opisz krótko swój przepis."
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            ></textarea>
+          </div>
+
+          <div className="relative w-96 mx-auto">
+            <label className="label label-text" htmlFor="preparationTime">
+              Czas przygotowania
+            </label>
+            <input
+              required
+              type="text"
+              className="input"
+              id="preparationTime"
+              placeholder="Czas przygotowania (w minutach)."
+              value={preparationTime}
+              onChange={(e) => setPreparationTime(e.target.value)}
+            />
+          </div>
+
+          <div className="relative w-96 mx-auto">
+            <label className="label label-text" htmlFor="instructions">
+              Instrukcje
+            </label>
+            <textarea
+              required
+              className="textarea"
+              placeholder="Tutaj rozpisz kroki przygotowania posiłku."
+              value={instructions}
+              id='instructions'
+              onChange={(e) => setInstructions(e.target.value)}
+            ></textarea>
+          </div>
+
+          <div className="w-96 mx-auto dropdown relative inline-flex rtl:[--placement:bottom-end]">
+            <Button
+              id="dropdown-default"
+              type="button"
+              className="w-96 dropdown-toggle btn btn-soft"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-label="Dropdown"
+            >
+              Kategoria: {category}
+            </Button>
+            <ul
+              className="dropdown-menu dropdown-open:opacity-100 hidden w-96"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="dropdown-default"
+            >
+              {Object.values(RecipeCategory).map((cat) => (
+                <li key={cat}>
+                  <a
+                    className="dropdown-item"
+                    onClick={() => handleCategorySelect(cat)}
+                  >
+                    {cat}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="relative w-96 mx-auto flex gap-2">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-primary my-auto"
+              id="isRestricted"
+              checked={isRestricted}
+              onChange={(e) => setIsRestricted(e.target.checked)}
+            />
+            <label className="label -mt-1 cursor-pointer flex-col items-start pt-0" htmlFor="isRestricted">
+              <span className="label-text text-base w-full">Prywatny</span>
+              <span className="label-text-alt w-full">Tylko Ty będziesz widzieć ten przepis.</span>
+            </label>
+          </div>
+
+          <Button type="submit">Dodaj przepis</Button>
+        </form>
+      )}
+    </div>
   );
 };
 

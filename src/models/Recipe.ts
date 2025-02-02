@@ -1,39 +1,18 @@
-import { Product } from './Product';
-import { ShoppingList } from './ShoppingList';
+export enum RecipeCategory {
+  BREAKFAST = "śniadanie",
+  LUNCH = "lunch",
+  DINNER = "obiad",
+  SUPPER = "kolacja",
+  DESSERT = "deser"
+}
 
-export class Recipe {
-  id: number;
-  authorID: number;
-  author: string;
+export interface Recipe {
+  id: string;
+  authorId: string;
   name: string;
-  preparationTime: number;
-  ingredients: Product[];
+  description: string;
+  preparationTime: string;
   instructions: string;
-  category: string;
-  shoppingList: ShoppingList;
+  category: RecipeCategory;
   isRestricted: boolean;
-
-  constructor(
-    id: number,
-    authorID: number,
-    author: string,
-    name: string,
-    preparationTime: number,
-    ingredients: Product[],
-    instructions: string,
-    category: string,
-    shoppingList: ShoppingList,
-    isRestricted: boolean
-  ) {
-    this.id = id;
-    this.authorID = authorID;
-    this.author = author;
-    this.name = name;
-    this.preparationTime = preparationTime;
-    this.ingredients = ingredients;
-    this.instructions = instructions;
-    this.category = category;
-    this.shoppingList = shoppingList;
-    this.isRestricted = isRestricted;
-  }
 }

@@ -1,13 +1,16 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import authReducer from './features/auth/authSlice';
 import recipesReducer from './features/recipeSlice';
+import profileReducer from './features/profileSlice'; // Import nowego slice
 
 import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'; 
-// import { RecipesState } from './features/recipeSlice'; // Import RecipesState
 
 // Konfiguracja store
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     recipes: recipesReducer,
+    profile: profileReducer, // Dodanie nowego slice
   },
 });
 

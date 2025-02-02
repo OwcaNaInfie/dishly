@@ -3,26 +3,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
 import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
+import { Recipe } from '../models/Recipe'; // Import modelu Recipe
 
-// Definiuj typ Recipe
-export interface Recipe {
-  id: string;
-  title: string;
-  category?: string;
-  description?: string;
-}
-
-// Definiuj typ RecipesState
 export interface RecipesState {
   recipes: Recipe[];
 }
 
-// Inicjalny stan
 const initialState: RecipesState = {
   recipes: [],
 };
 
-// Twórz slice
 const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
@@ -39,10 +29,9 @@ const recipesSlice = createSlice({
   },
 });
 
-// Eksportuj akcje
 export const { addRecipeSuccess, deleteRecipeSuccess, setRecipes } = recipesSlice.actions;
 
-// Eksportuj asynchroniczne akcje
+// Pobierz przepisy z Firestore
 export const fetchRecipes = (): AppThunk => async (dispatch) => {
   try {
     const querySnapshot = await getDocs(collection(db, 'recipes'));
@@ -56,15 +45,17 @@ export const fetchRecipes = (): AppThunk => async (dispatch) => {
   }
 };
 
-export const addRecipe = (title: string): AppThunk => async (dispatch) => {
+// Dodaj przepis do Firestore
+export const addRecipe = (recipe: Omit<Recipe, 'id'>): AppThunk => async (dispatch) => {
   try {
-    const docRef = await addDoc(collection(db, 'recipes'), { title });
-    dispatch(addRecipeSuccess({ id: docRef.id, title }));
+    const docRef = await addDoc(collection(db, 'recipes'), recipe);
+    dispatch(addRecipeSuccess({ id: docRef.id, ...recipe }));
   } catch (error) {
     console.error('Error adding recipe: ', error);
   }
 };
 
+// Usuń przepis z Firestore
 export const deleteRecipe = (id: string): AppThunk => async (dispatch) => {
   try {
     await deleteDoc(doc(db, 'recipes', id));
@@ -74,5 +65,4 @@ export const deleteRecipe = (id: string): AppThunk => async (dispatch) => {
   }
 };
 
-// Eksportuj reducer
 export default recipesSlice.reducer;
