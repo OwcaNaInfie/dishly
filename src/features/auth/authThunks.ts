@@ -4,18 +4,17 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithP
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { setUser, setLoading, setError } from './authSlice';
 import { FirebaseError } from 'firebase/app';
-import { User, UserGender } from '../../models/User'
+import { User } from '../../models/User'
 
 // Rejestracja użytkownika
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
-  async ({ email, password, name, surname, gender, photoURL, bio, telephone }: { 
+  async ({ email, password, name, surname, photoURL, bio, telephone }: { 
     email: string; 
     password: string;
     name: string;
     surname: string;
     photoURL: string;
-    gender: UserGender;
     bio: string;
     telephone: string;
   }, { dispatch }) => {
@@ -32,7 +31,6 @@ export const registerUser = createAsyncThunk(
         surname,
         displayName: `${name} ${surname}`,
         photoURL,
-        gender,
         bio,
         telephone,
         createdAt: new Date().toISOString(),
@@ -47,7 +45,6 @@ export const registerUser = createAsyncThunk(
         password,
         displayName: `${name} ${surname}`,
         photoURL,
-        gender,
         bio,
         email: user.email || '',
         telephone,
@@ -89,7 +86,6 @@ export const loginUser = createAsyncThunk(
           password: userData.password,
           displayName: userData.displayName,
           photoURL: userData.photoURL,
-          gender: userData.gender,
           bio: userData.bio,
           email: firebaseUser.email || '',
           telephone: userData.telephone,
@@ -133,7 +129,6 @@ export const loginWithGoogle = createAsyncThunk(
           createdAt: new Date().toISOString(),
           name: '',
           surname: '',
-          gender: UserGender.MALE,
           bio: '',
           telephone: '',
           myRecipes: [],
@@ -150,7 +145,6 @@ export const loginWithGoogle = createAsyncThunk(
         password: userData?.password || '',
         displayName: userData?.displayName || firebaseUser.displayName || '',
         photoURL: userData?.photoURL || '',
-        gender: userData?.gender || UserGender.MALE,
         bio: userData?.bio || '',
         email: firebaseUser.email || '',
         telephone: userData?.telephone || '',

@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./node_modules/flyonui/dist/js/*.js"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./node_modules/flyonui/dist/js/*.js", "./node_modules/notyf/**/*.js"],
   theme: {
     fontFamily: {
       'poppins': ['"poppins"', 'ui-sans-serif'],
@@ -13,6 +13,7 @@ module.exports = {
     require("flyonui/plugin")
   ],
   flyonui: {
+    vendors: true,
     themes: [
       {
         mytheme: {

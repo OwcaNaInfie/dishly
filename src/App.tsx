@@ -3,7 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import RoutesConfig from './routes';
 import './index.css'
 import './output.css'
-
+import 'notyf/notyf.min.css';
 
 function App() {
   return (

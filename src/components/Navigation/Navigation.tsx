@@ -37,7 +37,7 @@ const Navigation: React.FC = () => {
         </li>
         <li><a className="dropdown-item" href="/profile">Profil</a></li>
         <li><a className="dropdown-item" href="/">Przepisy</a></li>
-
+        <li><a className="dropdown-item" href="/add-recipe">Dodaj przepis</a></li>
         <li className="dropdown-footer gap-2">
           <Button onClick={handleSignOutClick} className="btn btn-error btn-soft btn-block">Wyloguj</Button>
         </li>

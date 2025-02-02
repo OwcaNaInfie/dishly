@@ -73,22 +73,22 @@ const SignIn: React.FC = () => {
             type="email"
             placeholder="Email"
             className="input input-floating input-lg peer"
-            id="floatingInput"
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <label className="input-floating-label" htmlFor="floatingInput">Email</label>
+          <label className="input-floating-label" htmlFor="email">Email</label>
         </div>
         <div className="relative w-96 mx-auto">
           <input
             type="password"
             placeholder="Hasło"
             className="input input-floating input-lg peer"
-            id="floatingInput"
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <label className="input-floating-label" htmlFor="floatingInput">Hasło</label>
+          <label className="input-floating-label" htmlFor="password">Hasło</label>
         </div>
         <Button className='flex w-96 mx-auto' type="submit">Zaloguj się</Button>
       </form>

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../Layouts/AuthLayout';
 import Button from '../Button/Button';
 import { FirebaseError } from 'firebase/app';
-import { UserGender } from '../../models/User';
 import { auth } from '../../firebaseConfig';
 
 const SignUp: React.FC = () => {
@@ -25,7 +24,6 @@ const SignUp: React.FC = () => {
       name: 'John',
       surname: 'Doe',
       photoURL: auth.currentUser?.photoURL || "https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png",
-      gender: UserGender.MALE,
       bio: 'Opis użytkownika',
       telephone: '000-000-000',
     };

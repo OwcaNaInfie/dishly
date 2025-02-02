@@ -6,6 +6,8 @@ import RecipeList from './components/RecipeList/RecipeList';
 import UserProfile from './pages/UserProfile';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import AddRecipePage from './pages/AddRecipePage';
+import RecipeDetails from './pages/RecipeDetails'
 
 
 const AppRoutes: React.FC = () => {
@@ -33,10 +35,26 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
+        path="/recipe-details/:id"
+        element={
+          <ProtectedRoute>
+            <RecipeDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/profile"
         element={
           <ProtectedRoute>
               <UserProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/add-recipe"
+        element={
+          <ProtectedRoute>
+              <AddRecipePage />
           </ProtectedRoute>
         }
       />

@@ -3,9 +3,8 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { fetchRecipes, deleteRecipe } from '../../features/recipeSlice';
 import { useNavigate } from 'react-router-dom';
 import Heading from '../Heading/Heading';
-import AddRecipe from '../Recipe/AddRecipe';
-import { Recipe } from '../../models/Recipe'; // Import modelu Recipe
-import RecipeTile from '../Recipe/RecipeTile'; // Import komponentu Recipe
+import { Recipe } from '../../models/Recipe';
+import RecipeTile from '../Recipe/RecipeTile';
 
 const RecipeList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,19 +12,19 @@ const RecipeList: React.FC = () => {
   const navigateTo = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchRecipes()); // Pobierz przepisy podczas montowania komponentu
+    dispatch(fetchRecipes());
   }, [dispatch]);
+
 
   return (
     <div className="home-container">
       <Heading type='h1' title='Przepisy' />
-      <AddRecipe />
       <div className="recipe-list flex flex-wrap gap-8">
         {recipes.map((recipe: Recipe) => (
           <RecipeTile
             key={recipe.id}
             recipe={recipe}
-            onView={() => navigateTo(`/recipe/${recipe.id}`)}
+            onView={() => navigateTo(`/recipe-details/${recipe.id}`)}
             onDelete={() => dispatch(deleteRecipe(recipe.id!))}
           />
         ))}

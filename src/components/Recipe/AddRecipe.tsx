@@ -4,6 +4,11 @@ import { auth } from '../../firebaseConfig';
 import { addRecipe } from '../../features/recipeSlice';
 import Button from '../Button/Button';
 import { RecipeCategory } from '../../models/Recipe';
+import { Notyf } from 'notyf';
+import { useNavigate } from 'react-router-dom'
+
+// Create an instance of Notyf
+const notyf = new Notyf();
 
 const AddRecipe: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -14,9 +19,8 @@ const AddRecipe: React.FC = () => {
   const [category, setCategory] = useState<RecipeCategory>(RecipeCategory.BREAKFAST);
   const [isRestricted, setIsRestricted] = useState(false);
 
-  // Stan lokalny do zarządzania widocznością formularza
-  const [showForm, setShowForm] = useState(false);
-
+  const navigateTo = useNavigate()
+  
   useEffect(() => {
     // Inicjalizacja FlyonUI Dropdown
     window.HSStaticMethods.autoInit(["dropdown"]);
@@ -52,8 +56,12 @@ const AddRecipe: React.FC = () => {
     setCategory(RecipeCategory.BREAKFAST);
     setIsRestricted(false);
 
-    // Zamknij formularz po pomyślnym dodaniu przepisu
-    setShowForm(false);
+    notyf.success('Przepis został dodany');
+
+    setTimeout(() => {
+        navigateTo("/");
+    }, 3000);
+
   };
 
   const handleCategorySelect = (selectedCategory: RecipeCategory) => {
@@ -61,14 +69,6 @@ const AddRecipe: React.FC = () => {
   };
 
   return (
-    <div>
-      {/* Przycisk do otwierania formularza */}
-      <Button className="mb-4" onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Ukryj formularz' : 'Dodaj nowy przepis'}
-      </Button>
-
-      {/* Formularz */}
-      {showForm && (
         <form onSubmit={handleAddRecipe} className='card-body flex flex-col justify-between gap-y-6 border border-neutral mb-4'>
           <div className="relative w-96 mx-auto">
             <label className="label label-text" htmlFor="name">
@@ -132,7 +132,7 @@ const AddRecipe: React.FC = () => {
 
           <div className="w-96 mx-auto dropdown relative inline-flex rtl:[--placement:bottom-end]">
             <Button
-              id="dropdown-default"
+              id="category"
               type="button"
               className="w-96 dropdown-toggle btn btn-soft"
               aria-haspopup="menu"
@@ -145,7 +145,7 @@ const AddRecipe: React.FC = () => {
               className="dropdown-menu dropdown-open:opacity-100 hidden w-96"
               role="menu"
               aria-orientation="vertical"
-              aria-labelledby="dropdown-default"
+              aria-labelledby="category"
             >
               {Object.values(RecipeCategory).map((cat) => (
                 <li key={cat}>
@@ -176,8 +176,6 @@ const AddRecipe: React.FC = () => {
 
           <Button type="submit">Dodaj przepis</Button>
         </form>
-      )}
-    </div>
   );
 };
 
