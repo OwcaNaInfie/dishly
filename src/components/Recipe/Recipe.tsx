@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../store';
-import { deleteRecipe } from '../../features/recipeSlice';
+import { useParams } from 'react-router-dom';
+import { useAppSelector } from '../../store';
 import type { Recipe } from '../../models/Recipe';
 import Button from '../Button/Button';
 import Heading from '../Heading/Heading';
 
 const RecipeDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const recipes = useAppSelector((state) => state.recipes.recipes);
-  const uid = useAppSelector((state) => state.auth.user?.uid); // Pobranie ID zalogowanego użytkownika
 
   const [recipe, setRecipe] = useState<Recipe | null>(null);
 
@@ -19,13 +15,6 @@ const RecipeDetails: React.FC = () => {
     const foundRecipe = recipes.find((r) => r.id === id);
     setRecipe(foundRecipe || null);
   }, [id, recipes]);
-
-  const handleDelete = () => {
-    if (recipe && window.confirm('Czy na pewno chcesz usunąć ten przepis?')) {
-      dispatch(deleteRecipe(recipe.id!));
-      navigate('/recipes'); // Przekierowanie po usunięciu
-    }
-  };
 
   if (!recipe) {
     return <p className="text-center text-lg font-semibold">Nie znaleziono przepisu.</p>;
@@ -35,29 +24,32 @@ const RecipeDetails: React.FC = () => {
     <div className="w-full mx-auto p-6 border border-neutral">
       <Heading title={recipe.name} type="h1" />
       <p className="text-gray-500 text-lg mb-4">{recipe.category}</p>
-      
       <p><strong>Opis:</strong> {recipe.description}</p>
-      
       <p><strong>Czas przygotowania:</strong> {recipe.preparationTime} minut</p>
-      
       <Heading type="h4" title="Instrukcje" />
       <p>{recipe.instructions}</p>
 
-      <p className="text-sm text-gray-500">
-        {recipe.isRestricted ? 'Ten przepis jest prywatny.' : 'Przepis jest publiczny.'}
-      </p>
+      {recipe.shoppingList && recipe.shoppingList.length > 0 && (
+        <div className="mt-6">
+          <Heading type="h4" title="Lista zakupów" />
+          <ul className="space-y-3">
 
-      <div className="mt-6 flex justify-center gap-4">
-        <Button onClick={() => window.history.back()}>Wróć</Button>
-        {recipe.authorId === uid && ( // Sprawdzenie, czy użytkownik jest autorem
-          <Button onClick={handleDelete} className="btn btn-error">
-            Usuń przepis
-          </Button>
-        )}
+            {recipe.shoppingList.map((product, index) => (
+              <li key={index} className="flex items-center space-x-3 rtl:space-x-reverse">
+              <span className="bg-primary/20 text-primary flex items-center justify-center rounded-full p-1">
+                <span className="icon-[tabler--arrow-right] size-4 rtl:rotate-180"></span>
+              </span>
+              <span className="text-base-content/80">{product.name} - {product.amount} {product.unit}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="mt-6 flex gap-4">
+        <Button onClick={() => window.history.back()}>Wróć do listy przepisów</Button>
       </div>
-
     </div>
   );
 };
-
 export default RecipeDetails;

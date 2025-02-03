@@ -20,12 +20,15 @@ const profileSlice = createSlice({
   reducers: {
     setUser(state, action: PayloadAction<User | null>) {
       state.user = action.payload;
+      console.log("Użytkownik ustawiony w Redux:", action.payload); // Debugowanie
     },
     updateUserSuccess(state, action: PayloadAction<User>) {
       state.user = action.payload;
+      console.log("Użytkownik zaktualizowany w Redux:", action.payload); // Debugowanie
     },
     deleteUserSuccess(state) {
-      state.user = null; // Ustawiamy user na null po usunięciu
+      state.user = null;
+      console.log("Użytkownik usunięty z Redux."); // Debugowanie
     },
   },
 });
@@ -50,21 +53,25 @@ export const fetchUser = (userId: string): AppThunk => async (dispatch) => {
 // Zaktualizuj dane użytkownika w Firestore
 export const updateUser = (user: User): AppThunk => async (dispatch) => {
   try {
+    console.log("Aktualizowanie użytkownika:", user); // Debugowanie
     const updatedUser = { 
       ...user, 
-      displayName: `${user.name} ${user.surname}` // 🔥 Automatyczna aktualizacja displayName
+      displayName: `${user.name} ${user.surname}`
     };
 
-    console.log("Updating user: ", user);
-    await setDoc(doc(db, 'users', user.id), user, { merge: true });
+    // Aktualizacja Firestore
+    await setDoc(doc(db, 'users', user.id), updatedUser, { merge: true });
 
+    // Aktualizacja profilu Firebase Auth (jeśli potrzebne)
     if (auth.currentUser) {
       await updateProfile(auth.currentUser, { displayName: updatedUser.displayName });
     }
 
+    // Aktualizacja stanu Redux
     dispatch(updateUserSuccess(updatedUser));
+    console.log("Użytkownik zaktualizowany pomyślnie!"); // Debugowanie
   } catch (error) {
-    console.error('Error updating user: ', error);
+    console.error('Błąd podczas aktualizacji użytkownika:', error); // Debugowanie
   }
 };
 

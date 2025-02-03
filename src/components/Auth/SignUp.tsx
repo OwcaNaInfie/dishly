@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAppDispatch } from '../../store';
 import { registerUser } from '../../features/auth/authThunks';
@@ -21,7 +22,7 @@ const SignUp: React.FC = () => {
     const newUser = {
       email,
       password,
-      name: 'John',
+      name: 'John', // Możesz zmienić na dynamiczne wartości
       surname: 'Doe',
       photoURL: auth.currentUser?.photoURL || "https://cdn.flyonui.com/fy-assets/avatar/avatar-2.png",
       bio: 'Opis użytkownika',
@@ -91,7 +92,9 @@ const SignUp: React.FC = () => {
         </div>
         <Button className='flex w-96 mx-auto' type="submit">Zarejestruj się</Button>
       </form>
-      {error && <p className="text-error text-center mx-auto mt-2">{error}</p>}
+      <div className="mx-auto h-[37px]">
+        {error && <p className="text-error text-center mx-auto">{error}</p>}
+      </div>
       <p className='text-center'>
         Masz już konto? <a className="link link-primary link-animated" href="/signin">Zaloguj się</a>
       </p>

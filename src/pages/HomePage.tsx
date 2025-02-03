@@ -5,7 +5,7 @@ function HomePage() {
 
   return (
     <MainLayout>
-      <RecipeList />
+      <RecipeList headingTitle="Przepisy" />
     </MainLayout>
   )
 }

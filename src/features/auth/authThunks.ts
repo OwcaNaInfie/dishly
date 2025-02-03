@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { auth, db, googleAuthProvider } from '../../firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { setUser, setLoading, setError } from './authSlice';
 import { FirebaseError } from 'firebase/app';
-import { User } from '../../models/User'
+import { User } from '../../models/User';
 
 // Rejestracja użytkownika
 export const registerUser = createAsyncThunk(
@@ -42,16 +42,16 @@ export const registerUser = createAsyncThunk(
         username: user.email || '',
         name,
         surname,
-        password,
+        password,  // Zapisujemy hasło, jeśli chcesz przechowywać je w Firestore
         displayName: `${name} ${surname}`,
         photoURL,
         bio,
         email: user.email || '',
         telephone,
-        myRecipes: [],
+        myRecipes: []
       };
 
-      dispatch(setUser(newUser));
+      dispatch(setUser(newUser)); // Zaktualizowanie stanu użytkownika w Redux
     } catch (error) {
       if (error instanceof FirebaseError) {
         dispatch(setError(error.message));
@@ -89,7 +89,7 @@ export const loginUser = createAsyncThunk(
           bio: userData.bio,
           email: firebaseUser.email || '',
           telephone: userData.telephone,
-          myRecipes: userData.myRecipes || [],
+          myRecipes: userData.myRecipes || []
         };
         dispatch(setUser(user));
       } else {

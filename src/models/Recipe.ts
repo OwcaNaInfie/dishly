@@ -1,3 +1,5 @@
+import { Product } from "./Product";
+
 export enum RecipeCategory {
   BREAKFAST = "śniadanie",
   LUNCH = "lunch",
@@ -11,6 +13,7 @@ export interface Recipe {
   authorId: string;
   name: string;
   description: string;
+  shoppingList: Product[];
   preparationTime: string;
   instructions: string;
   category: RecipeCategory;

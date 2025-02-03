@@ -7,6 +7,7 @@ import EditUserProfile from '../UserProfile/EditUserProfile'
 import { signOut } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 import { Notyf } from 'notyf';
+import Heading from '../Heading/Heading';
 
 // Create an instance of Notyf
 const notyf = new Notyf();
@@ -37,10 +38,8 @@ const UserProfile: React.FC = () => {
 
   return (
     <div className="user-profile">
-      {/* Sekcja do edycji użytkownika */}
+      <Heading type='h1' title='Mój profil' />
       <EditUserProfile />
-
-      {/* Przycisk usuwania użytkownika */}
       <Button onClick={handleDeleteUser} className="btn btn-error btn-soft btn-block mt-4">
         Usuń konto
       </Button>
