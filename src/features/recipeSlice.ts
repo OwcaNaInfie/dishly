@@ -1,7 +1,7 @@
 // features/recipes/recipesSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
-import { addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { updateDoc, arrayUnion, addDoc, collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Recipe } from '../models/Recipe'; // Import modelu Recipe
 
@@ -45,11 +45,21 @@ export const fetchRecipes = (): AppThunk => async (dispatch) => {
   }
 };
 
-// Dodaj przepis do Firestore
+// Dodaj przepis do Firestore i aktualizuj listę myRecipes użytkownika
 export const addRecipe = (recipe: Omit<Recipe, 'id'>): AppThunk => async (dispatch) => {
   try {
+    // Dodaj przepis do kolekcji "recipes"
     const docRef = await addDoc(collection(db, 'recipes'), recipe);
+
+    // Dodaj identyfikator przepisu do listy myRecipes użytkownika
+    const userRef = doc(db, 'users', recipe.authorId); // Pobierz dokument użytkownika
+    await updateDoc(userRef, {
+      myRecipes: arrayUnion(docRef.id), // Dodaj id przepisu do myRecipes
+    });
+
+    // Dispatch action do Redux
     dispatch(addRecipeSuccess({ id: docRef.id, ...recipe }));
+
   } catch (error) {
     console.error('Error adding recipe: ', error);
   }

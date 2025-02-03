@@ -6364,6 +6364,10 @@ textarea:focus-visible {
   margin-bottom: 5rem;
 }
 
+.mr-4 {
+  margin-right: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -6593,6 +6597,14 @@ textarea:focus-visible {
 
 .gap-y-6 {
   row-gap: 1.5rem;
+}
+
+.place-self-start {
+  place-self: start;
+}
+
+.justify-self-start {
+  justify-self: start;
 }
 
 .overflow-x-auto {

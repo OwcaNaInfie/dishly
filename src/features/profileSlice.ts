@@ -1,8 +1,7 @@
-// features/profile/profileSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
-import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
-import { updateProfile } from "firebase/auth";
+import { doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { updateProfile } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { db } from '../firebaseConfig';
 import { User } from '../models/User';
@@ -26,7 +25,7 @@ const profileSlice = createSlice({
       state.user = action.payload;
     },
     deleteUserSuccess(state) {
-      state.user = null;
+      state.user = null; // Ustawiamy user na null po usunięciu
     },
   },
 });
@@ -51,15 +50,15 @@ export const fetchUser = (userId: string): AppThunk => async (dispatch) => {
 // Zaktualizuj dane użytkownika w Firestore
 export const updateUser = (user: User): AppThunk => async (dispatch) => {
   try {
-		const updatedUser = { 
+    const updatedUser = { 
       ...user, 
       displayName: `${user.name} ${user.surname}` // 🔥 Automatyczna aktualizacja displayName
     };
 
-		console.log("Updating user: ", user);
+    console.log("Updating user: ", user);
     await setDoc(doc(db, 'users', user.id), user, { merge: true });
 
-		if (auth.currentUser) {
+    if (auth.currentUser) {
       await updateProfile(auth.currentUser, { displayName: updatedUser.displayName });
     }
 
@@ -69,13 +68,25 @@ export const updateUser = (user: User): AppThunk => async (dispatch) => {
   }
 };
 
-// Usuń użytkownika z Firestore
 export const deleteUser = (userId: string): AppThunk => async (dispatch) => {
   try {
-    await deleteDoc(doc(db, 'users', userId));
-    dispatch(deleteUserSuccess());
+    // Pobierz przepisy użytkownika na podstawie jego ID (authorId)
+    const recipesQuery = query(collection(db, 'recipes'), where('authorId', '==', userId));
+    const querySnapshot = await getDocs(recipesQuery);
+    
+    // Usuń wszystkie przepisy powiązane z użytkownikiem
+    querySnapshot.forEach(async (docSnapshot) => {
+      await deleteDoc(doc(db, 'recipes', docSnapshot.id));
+    });
+
+    // Teraz usuń użytkownika
+    const userRef = doc(db, 'users', userId);
+    await deleteDoc(userRef); // Usuń dokument użytkownika z kolekcji users
+
+    // Dispatch action do Redux
+    dispatch(deleteUserSuccess()); // Nie przekazuj userId, ponieważ już go usunęliśmy
   } catch (error) {
-    console.error('Error deleting user: ', error);
+    console.error('Error deleting user and their recipes: ', error);
   }
 };
 
